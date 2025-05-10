@@ -2,6 +2,8 @@ package com.techchicks.edubot.service;
 
 import com.techchicks.edubot.model.Question;
 import com.techchicks.edubot.repository.QuestionRepository;
+import java.util.Collections;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,10 @@ public class QuestionService {
 
     public void createQuestion(Question question) {
         questionRepository.save(question);
+    }
+
+    public void createQuestionsBulk(List<Question> questions) {
+        questionRepository.saveAll(questions);
     }
 
     public void updateQuestion(Long id, Question question) {
@@ -55,6 +61,17 @@ public class QuestionService {
     }
 
     public List<Question> getQuestionsForQuiz(String continent, String difficulty) {
-        return questionRepository.findTop15ByContinentAndDifficulty(continent, difficulty);
+        List<Question> questions;
+        if (Objects.equals(continent, "ALL CONTINENTS")) {
+            questions =  questionRepository.findByDifficulty(difficulty);
+        } else {
+            questions = questionRepository.findByContinentAndDifficulty(continent, difficulty);
+        }
+
+        Collections.shuffle(questions);
+
+        return questions.subList(0, Math.min(10, questions.size()));
     }
+
+
 }

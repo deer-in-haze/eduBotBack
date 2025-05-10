@@ -39,16 +39,26 @@ public class QuestionController {
     }
 
     @GetMapping("/question/{id}")
-    public ResponseEntity<Question> getUser(@PathVariable Long id) {
+    public ResponseEntity<Question> getQuestion(@PathVariable Long id) {
         Optional<Question> question = questionService.getQuestionById(id);
         return question.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     @PostMapping("/question")
-    public ResponseEntity<Void> createUser(@RequestBody Question question) {
+    public ResponseEntity<Void> createQuestion(@RequestBody Question question) {
         questionService.createQuestion(question);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/questions/bulk")
+    public ResponseEntity<Void> createQuestionsBulk(@RequestBody List<Question> questions) {
+        questionService.createQuestionsBulk(questions);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+
 
     @PutMapping("question/{id}")
     public ResponseEntity<Void> updateQuestion(@PathVariable Long id, @RequestBody Question question) {

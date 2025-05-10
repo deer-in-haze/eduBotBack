@@ -16,15 +16,14 @@ public class JwtUtil {
     @Value("${jwt_secret}")
     private String secret;
 
-    public String generateToken(String username) throws
-            IllegalArgumentException, JWTCreationException {
+    public String generateToken(String username) throws IllegalArgumentException, JWTCreationException {
         return JWT.create()
                 .withSubject("User Details")
                 .withClaim("username", username)
                 .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 3600000)) // Expires in 1 hour
                 .withIssuer("JOB TRACKER APPLICATION")
                 .sign(Algorithm.HMAC256(secret));
-
     }
 
     public String validateTokenAndRetrieveSubject(String token) throws
