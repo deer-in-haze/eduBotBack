@@ -61,16 +61,26 @@ public class QuestionService {
     }
 
     public List<Question> getQuestionsForQuiz(String continent, String difficulty) {
+        log.info("Fetching questions for quiz: continent={}, difficulty={}", continent, difficulty);
+
         List<Question> questions;
+
         if (Objects.equals(continent, "ALL CONTINENTS")) {
-            questions =  questionRepository.findByDifficulty(difficulty);
+            log.debug("Searching for questions with difficulty: {}", difficulty);
+            questions = questionRepository.findByDifficulty(difficulty);
         } else {
+            log.debug("Searching for questions with continent: {} and difficulty: {}", continent, difficulty);
             questions = questionRepository.findByContinentAndDifficulty(continent, difficulty);
         }
 
+        log.info("Found {} questions before shuffling", questions.size());
         Collections.shuffle(questions);
+        log.info("Questions shuffled");
 
-        return questions.subList(0, Math.min(10, questions.size()));
+        List<Question> selectedQuestions = questions.subList(0, Math.min(10, questions.size()));
+        log.info("Selected {} questions for quiz", selectedQuestions.size());
+
+        return selectedQuestions;
     }
 
 
