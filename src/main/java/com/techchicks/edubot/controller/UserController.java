@@ -53,9 +53,17 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
-        userService.createUser(user);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        try {
+            userService.createUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (RuntimeException e) {
+            log.error("Error creating user: ", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error creating user: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
 
     @PutMapping("/user/{id}")

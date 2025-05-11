@@ -4,6 +4,7 @@ import com.techchicks.edubot.model.User;
 import com.techchicks.edubot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +30,17 @@ public class UserService {
     }
 
     public void createUser(User user) {
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+            log.info("User created successfully: {}", user);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Failed to create user due to data integrity violation for email: {}", user.getEmail(), e);
+            throw new RuntimeException("Email already exists: " + user.getEmail());
+        } catch (Exception e) {
+            log.error("An unexpected error occurred while creating user with email: {}", user.getEmail(), e);
+            throw new RuntimeException("An error occurred while creating the user");
+        }
     }
-
     public void updateUser(Long id, User user) {
         Optional<User> existingUserOpt = userRepository.findById(id);
         if (existingUserOpt.isPresent()) {
