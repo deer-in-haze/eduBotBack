@@ -65,7 +65,7 @@ public class UserService {
     }
 
     public List<User> getTop10Users() {
-        return userRepository.findTop10ByOrderByHighscoreDesc();
+        return userRepository.findTop5ByOrderByHighscoreDesc();
     }
 }
 
