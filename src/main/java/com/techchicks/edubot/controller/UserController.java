@@ -59,6 +59,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (RuntimeException e) {
             log.error("Error creating user: ", e);
+            // Return the error message from the exception to the frontend
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             log.error("Unexpected error creating user: ", e);
